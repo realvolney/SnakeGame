@@ -62,7 +62,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
             @Override
             public void actionPerformed(ActionEvent e) {
                 int choice = JOptionPane.showConfirmDialog(SnakeGame.this,
-                        "Never Give Up!","You ate '" + snakeBody.size() + "' Snake Snacks",
+                        "Never Give Up!","Isn't this game fun??",
                         JOptionPane.YES_NO_CANCEL_OPTION);
 
                 switch (choice) {
