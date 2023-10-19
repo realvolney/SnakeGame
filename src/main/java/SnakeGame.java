@@ -62,18 +62,38 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
             @Override
             public void actionPerformed(ActionEvent e) {
                 int choice = JOptionPane.showConfirmDialog(SnakeGame.this,
-                        "Never Give up","Okay",
+                        "Never Give Up!","You ate '" + snakeBody.size() + "' Snake Snacks",
                         JOptionPane.YES_NO_CANCEL_OPTION);
+
+                switch (choice) {
+                    case JOptionPane.YES_OPTION:
+                        restartGame();
+                        break;
+                    case JOptionPane.NO_OPTION:
+                        SnakeGame.this.requestFocus();
+                        break;
+                    case JOptionPane.CANCEL_OPTION:
+                        SnakeGame.this.requestFocus();
+                        break;
+                    case JOptionPane.CLOSED_OPTION:
+                        SnakeGame.this.requestFocus();
+                        break;
+                    default:
+                        SnakeGame.this.requestFocus();
+                        break;
+                }
                 SnakeGame.this.requestFocus();
-
-
             }
         });
     }
     public void restartGame() {
+        SnakeGame.this.requestFocus();
+        restartButton.setVisible(false);
         gameOver = false;
-        this.boardWidth = boardWidth;
-        this.boardHeight = boardHeight;
+        snakeHead = new Tile(5, 5);
+        snakeBody = new ArrayList<>();
+        Xvelocity = 0;
+        Yvelocity = 0;
 
         setPreferredSize(new Dimension(this.boardWidth, this.boardHeight));
         setBackground(Color.BLACK);
@@ -81,8 +101,6 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
         setFocusable(true);
 
         placeFood();
-
-
         gameLoop = new Timer(100, this);
         gameLoop.start();
     }
@@ -126,12 +144,6 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
             g.setColor(Color.CYAN);
             g.drawString("Score: " + snakeBody.size(), tileSize - 16, tileSize);
         }
-
-
-    }
-
-    public boolean isGameOver() {
-        return gameOver;
     }
 
     public void placeFood() {
@@ -203,14 +215,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
         if (gameOver) {
             restartButton.setVisible(true);
             gameLoop.stop();
-
         }
-    }
-
-    public void setUpMenu() {
-        JMenuBar menuBar = new JMenuBar();
-        JMenu menu = new JMenu("Game Over");
-        menuBar.add(menu);
     }
 
     @Override

@@ -1,16 +1,12 @@
 import javax.swing.*;
 
 public class App {
-
     public static void main(String[] args) {
 
         int boardWidth = 600;
-        int boardHeight = boardWidth;
-
-
+        int boardHeight = 600;
 
         GameFrame frame = new GameFrame("Snake");
-
 
         SnakeGame snakeGame = new SnakeGame(boardWidth, boardHeight);
         frame.add(snakeGame);
@@ -18,5 +14,4 @@ public class App {
         frame.pack();
         snakeGame.requestFocus();
     }
-
 }

@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+// Practice Class to try to get buttons to work
 public class GUI extends JFrame {
 
     private JButton tryAgainButton;
