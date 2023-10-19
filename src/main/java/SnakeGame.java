@@ -6,6 +6,8 @@ import java.util.ListIterator;
 import java.util.Random;
 
 import javax.swing.*;
+import javax.swing.event.PopupMenuListener;
+
 public class SnakeGame extends JPanel implements ActionListener, KeyListener{
 
     private int boardWidth;
@@ -29,6 +31,8 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
     private int Yvelocity = 0;
 
     private boolean gameOver;
+    private JButton restartButton;
+
 
     public SnakeGame( int boardWidth, int boardHeight) {
 
@@ -41,7 +45,62 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
         setFocusable(true);
 
         placeFood();
+        createRestartButton();
+        add(restartButton);
 
+
+        gameLoop = new Timer(100, this);
+        gameLoop.start();
+    }
+
+    public void createRestartButton() {
+        restartButton = new JButton("Try Again?");
+        restartButton.setBackground(Color.WHITE);
+//        restartButton.setBounds(200, 100, 100, 50);
+        restartButton.setVisible(false);
+        restartButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int choice = JOptionPane.showConfirmDialog(SnakeGame.this,
+                        "Never Give Up!","Isn't this game fun??",
+                        JOptionPane.YES_NO_CANCEL_OPTION);
+
+                switch (choice) {
+                    case JOptionPane.YES_OPTION:
+                        restartGame();
+                        break;
+                    case JOptionPane.NO_OPTION:
+                        SnakeGame.this.requestFocus();
+                        break;
+                    case JOptionPane.CANCEL_OPTION:
+                        SnakeGame.this.requestFocus();
+                        break;
+                    case JOptionPane.CLOSED_OPTION:
+                        SnakeGame.this.requestFocus();
+                        break;
+                    default:
+                        SnakeGame.this.requestFocus();
+                        break;
+                }
+                SnakeGame.this.requestFocus();
+            }
+        });
+    }
+    public void restartGame() {
+        SnakeGame.this.requestFocus();
+        restartButton.setVisible(false);
+        gameOver = false;
+        snakeHead = new Tile(5, 5);
+        snakeBody = new ArrayList<>();
+        Xvelocity = 0;
+        Yvelocity = 0;
+
+        setPreferredSize(new Dimension(this.boardWidth, this.boardHeight));
+        setBackground(Color.BLACK);
+        addKeyListener(this);
+        setFocusable(true);
+
+        placeFood();
         gameLoop = new Timer(100, this);
         gameLoop.start();
     }
@@ -85,8 +144,6 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
             g.setColor(Color.CYAN);
             g.drawString("Score: " + snakeBody.size(), tileSize - 16, tileSize);
         }
-
-
     }
 
     public void placeFood() {
@@ -106,6 +163,25 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
 
         gameOver = checkGameOver();
         increaseSpeed();
+    }
+
+    private void moveBody() {
+
+        ListIterator<Tile> iterator = snakeBody.listIterator(snakeBody.size());
+
+        while(iterator.hasPrevious()) {
+            Tile snakePart = iterator.previous();
+
+            if(iterator.previousIndex() == -1) {
+                snakePart.x = snakeHead.x;
+                snakePart.y = snakeHead.y;
+            }
+            else {
+                Tile previous = snakeBody.get(iterator.previousIndex());
+                snakePart.x = previous.x;
+                snakePart.y = previous.y;
+            }
+        }
     }
     private void increaseSpeed() {
         if (!snakeBody.isEmpty()) {
@@ -127,25 +203,6 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
                     .anyMatch(tile -> collision(tile, snakeHead));
     }
 
-    private void moveBody() {
-
-        ListIterator<Tile> iterator = snakeBody.listIterator(snakeBody.size());
-
-        while(iterator.hasPrevious()) {
-            Tile snakePart = iterator.previous();
-
-            if(iterator.previousIndex() == -1) {
-                snakePart.x = snakeHead.x;
-                snakePart.y = snakeHead.y;
-            }
-            else {
-                Tile previous = snakeBody.get(iterator.previousIndex());
-                snakePart.x = previous.x;
-                snakePart.y = previous.y;
-            }
-        }
-    }
-
     public boolean collision(Tile tile1, Tile tile2) {
         return tile1.x == tile2.x && tile1.y == tile2.y;
     }
@@ -156,6 +213,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
         repaint();
 
         if (gameOver) {
+            restartButton.setVisible(true);
             gameLoop.stop();
         }
     }
