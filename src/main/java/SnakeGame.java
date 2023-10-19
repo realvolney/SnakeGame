@@ -57,13 +57,12 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
     public void createRestartButton() {
         restartButton = new JButton("Try Again?");
         restartButton.setBackground(Color.WHITE);
-//        restartButton.setBounds(200, 100, 100, 50);
         restartButton.setVisible(false);
         restartButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int choice = JOptionPane.showConfirmDialog(SnakeGame.this,
-                        "Never Give Up!","Isn't this game fun??",
+                        "Continue?","Isn't this game fun??",
                         JOptionPane.YES_NO_CANCEL_OPTION);
 
                 switch (choice) {
@@ -193,7 +192,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
         if (snakeBody.size() % 3 == 0) {
             int delay = gameLoop.getDelay()/60;
             gameLoop.setDelay((gameLoop.getDelay() - delay));
-            setRandomBackground(100, 250, 200);
+            setRandomBackground(100, 256, 256);
         }
         if (snakeBody.size() % 15 == 0) {
             setBackground(Color.BLACK);
@@ -203,6 +202,9 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
         float floatRed = random.nextInt(red);
         float floatGreen = random.nextInt(green);
         float floatBlue = random.nextInt(blue);
+        if (red >= 200) {
+            red = 0;
+        }
         setBackground(Color.getHSBColor(floatRed, floatGreen, floatBlue));
     }
 
