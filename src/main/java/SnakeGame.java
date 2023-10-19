@@ -6,23 +6,22 @@ import java.util.ListIterator;
 import java.util.Random;
 
 import javax.swing.*;
-import javax.swing.event.PopupMenuListener;
 
 public class SnakeGame extends JPanel implements ActionListener, KeyListener{
 
-    private int boardWidth;
+    private final int boardWidth;
 
-    private int boardHeight;
+    private final int boardHeight;
 
-    private int tileSize = 25;
+    private final int tileSize = 25;
 
-    private Tile snakeHead = new Tile(5, 5);
+    private  Tile snakeHead = new Tile(5, 5);
 
     private List<Tile> snakeBody = new ArrayList<>();
 
-    private Tile food = new Tile(10, 10);
+    private final Tile food = new Tile(10, 10);
 
-    private Random random = new Random();
+    private final Random random = new Random();
 
     private Timer gameLoop;
 
@@ -31,7 +30,9 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
     private int Yvelocity = 0;
 
     private boolean gameOver;
+
     private JButton restartButton;
+
 
 
     public SnakeGame( int boardWidth, int boardHeight) {
@@ -155,6 +156,8 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
         if (collision(snakeHead, food)) {
             snakeBody.add(new Tile(food.x, food.y));
             placeFood();
+            increaseSpeed();
+
         }
         moveBody();
 
@@ -162,7 +165,6 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
         snakeHead.y += Yvelocity;
 
         gameOver = checkGameOver();
-        increaseSpeed();
     }
 
     private void moveBody() {
@@ -185,13 +187,23 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
     }
     private void increaseSpeed() {
         if (!snakeBody.isEmpty()) {
-            int delay = gameLoop.getDelay()/1000;
+            int delay = gameLoop.getDelay()/100;
             gameLoop.setDelay((gameLoop.getDelay() - delay));
         }
-        if (snakeBody.size() % 5 == 0) {
-            int delay = gameLoop.getDelay()/80;
+        if (snakeBody.size() % 3 == 0) {
+            int delay = gameLoop.getDelay()/60;
             gameLoop.setDelay((gameLoop.getDelay() - delay));
+            setRandomBackground(100, 250, 200);
         }
+        if (snakeBody.size() % 15 == 0) {
+            setBackground(Color.BLACK);
+        }
+    }
+    private void setRandomBackground(int red, int green, int blue) {
+        float floatRed = random.nextInt(red);
+        float floatGreen = random.nextInt(green);
+        float floatBlue = random.nextInt(blue);
+        setBackground(Color.getHSBColor(floatRed, floatGreen, floatBlue));
     }
 
     private boolean checkGameOver() {
