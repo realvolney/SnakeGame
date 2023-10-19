@@ -159,6 +159,9 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
 
         }
         moveBody();
+        if (snakeBody.size() % 21 == 0 && !snakeBody.isEmpty()) {
+            setRandomBackground(200,200,200);
+        }
 
         snakeHead.x += Xvelocity;
         snakeHead.y += Yvelocity;
@@ -190,22 +193,19 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
             gameLoop.setDelay((gameLoop.getDelay() - delay));
         }
         if (snakeBody.size() % 3 == 0) {
-            int delay = gameLoop.getDelay()/60;
+            int delay = gameLoop.getDelay()/25;
             gameLoop.setDelay((gameLoop.getDelay() - delay));
-            setRandomBackground(100, 256, 256);
+            setRandomBackground(200, 256, 256);
         }
         if (snakeBody.size() % 15 == 0) {
             setBackground(Color.BLACK);
         }
     }
     private void setRandomBackground(int red, int green, int blue) {
-        float floatRed = random.nextInt(red);
-        float floatGreen = random.nextInt(green);
-        float floatBlue = random.nextInt(blue);
-        if (red >= 200) {
-            red = 0;
-        }
-        setBackground(Color.getHSBColor(floatRed, floatGreen, floatBlue));
+        int floatRed = random.nextInt(red);
+        int floatGreen = random.nextInt(green);
+        int floatBlue = random.nextInt(blue);
+        setBackground(new Color(floatRed, floatGreen, floatBlue));
     }
 
     private boolean checkGameOver() {
