@@ -6,6 +6,8 @@ import java.util.ListIterator;
 import java.util.Random;
 
 import javax.swing.*;
+import javax.swing.event.PopupMenuListener;
+
 public class SnakeGame extends JPanel implements ActionListener, KeyListener{
 
     private int boardWidth;
@@ -29,6 +31,8 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
     private int Yvelocity = 0;
 
     private boolean gameOver;
+    private JButton restartButton;
+
 
     public SnakeGame( int boardWidth, int boardHeight) {
 
@@ -41,6 +45,43 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
         setFocusable(true);
 
         placeFood();
+        createRestartButton();
+        add(restartButton);
+
+
+        gameLoop = new Timer(100, this);
+        gameLoop.start();
+    }
+
+    public void createRestartButton() {
+        restartButton = new JButton("Try Again?");
+        restartButton.setBackground(Color.WHITE);
+//        restartButton.setBounds(200, 100, 100, 50);
+        restartButton.setVisible(false);
+        restartButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int choice = JOptionPane.showConfirmDialog(SnakeGame.this,
+                        "Never Give up","Okay",
+                        JOptionPane.YES_NO_CANCEL_OPTION);
+                SnakeGame.this.requestFocus();
+
+
+            }
+        });
+    }
+    public void restartGame() {
+        gameOver = false;
+        this.boardWidth = boardWidth;
+        this.boardHeight = boardHeight;
+
+        setPreferredSize(new Dimension(this.boardWidth, this.boardHeight));
+        setBackground(Color.BLACK);
+        addKeyListener(this);
+        setFocusable(true);
+
+        placeFood();
+
 
         gameLoop = new Timer(100, this);
         gameLoop.start();
@@ -89,6 +130,10 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
 
     }
 
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
     public void placeFood() {
         food.x = random.nextInt(boardWidth / tileSize);
         food.y = random.nextInt(boardHeight / tileSize);
@@ -106,6 +151,25 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
 
         gameOver = checkGameOver();
         increaseSpeed();
+    }
+
+    private void moveBody() {
+
+        ListIterator<Tile> iterator = snakeBody.listIterator(snakeBody.size());
+
+        while(iterator.hasPrevious()) {
+            Tile snakePart = iterator.previous();
+
+            if(iterator.previousIndex() == -1) {
+                snakePart.x = snakeHead.x;
+                snakePart.y = snakeHead.y;
+            }
+            else {
+                Tile previous = snakeBody.get(iterator.previousIndex());
+                snakePart.x = previous.x;
+                snakePart.y = previous.y;
+            }
+        }
     }
     private void increaseSpeed() {
         if (!snakeBody.isEmpty()) {
@@ -127,25 +191,6 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
                     .anyMatch(tile -> collision(tile, snakeHead));
     }
 
-    private void moveBody() {
-
-        ListIterator<Tile> iterator = snakeBody.listIterator(snakeBody.size());
-
-        while(iterator.hasPrevious()) {
-            Tile snakePart = iterator.previous();
-
-            if(iterator.previousIndex() == -1) {
-                snakePart.x = snakeHead.x;
-                snakePart.y = snakeHead.y;
-            }
-            else {
-                Tile previous = snakeBody.get(iterator.previousIndex());
-                snakePart.x = previous.x;
-                snakePart.y = previous.y;
-            }
-        }
-    }
-
     public boolean collision(Tile tile1, Tile tile2) {
         return tile1.x == tile2.x && tile1.y == tile2.y;
     }
@@ -156,8 +201,16 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
         repaint();
 
         if (gameOver) {
+            restartButton.setVisible(true);
             gameLoop.stop();
+
         }
+    }
+
+    public void setUpMenu() {
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu("Game Over");
+        menuBar.add(menu);
     }
 
     @Override
