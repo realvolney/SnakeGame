@@ -109,7 +109,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener{
     }
     private void increaseSpeed() {
         if (!snakeBody.isEmpty()) {
-            int delay = gameLoop.getDelay()/100;
+            int delay = gameLoop.getDelay()/1000;
             gameLoop.setDelay((gameLoop.getDelay() - delay));
         }
         if (snakeBody.size() % 5 == 0) {
